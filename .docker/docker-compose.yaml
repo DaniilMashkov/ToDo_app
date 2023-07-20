@@ -1,0 +1,51 @@
+name: todo_app
+services:
+  frontend:
+    build:
+      context: ../frontend
+      target: dev-envs
+    networks:
+      - client-side
+    ports:
+      - 3000:3000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    links:
+      - backend
+  backend:
+    build:
+      context: ../backend
+      target: dev-envs
+    env_file:
+      backend/.env
+    networks:
+      - client-side
+      - server-side
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - db
+    links:
+      - db
+  db:
+      image: postgres:15
+      env_file:
+        - ../.env
+      environment:
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASS}
+        POSTGRES_DB: "db"
+      healthcheck:
+        test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d db" ]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+      networks:
+        - server-side
+
+networks:
+  client-side: {}
+  server-side: {}
+
+# volumes:
+#   backend-cache: {}

@@ -1,0 +1,11 @@
+.vscode
+*cache*
+.idea
+.git
+*.pyc
+*/__pycache__/
+backend/env
+frontend/node_modules/
+backend/.env
+.DS_Store
+.env

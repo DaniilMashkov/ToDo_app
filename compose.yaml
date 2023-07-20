@@ -1,0 +1,57 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASS}
+      POSTGRES_DB: "db"
+    networks:
+      - server-side
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d db" ]
+      interval: 3s
+      timeout: 5s
+      retries: 3
+  backend:
+    env_file:
+      .env
+    build:
+      context:
+        backend
+    volumes:
+      - ./backend/:/backend
+    depends_on:
+      db:
+         condition: service_healthy
+    links:
+      - db
+    ports:
+      - '5000:5000'
+    command: bash -c 'flask db init;
+                      flask db migrate -m "Initial migration.";
+                      flask db upgrade;
+                      gunicorn -w 4 -b 0.0.0.0:5000 "app:app"'
+                      # flask run --host 0.0.0.0'               
+    networks:
+      - server-side
+
+  frontend:
+    build:
+      context: frontend
+      target: development
+    networks:
+      - client-side
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/src:/code/src:ro
+  
+networks:
+  client-side: {}
+  server-side: {}
