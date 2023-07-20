@@ -2,7 +2,6 @@ import sqlalchemy as sa
 from app import db, jwt
 
 
-
 class User(db.Model):
     __table_args__ = {'extend_existing': True}
 

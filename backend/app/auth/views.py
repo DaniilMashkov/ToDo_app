@@ -2,7 +2,6 @@ from datetime import datetime, timezone, timedelta
 from flask import request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt, get_jwt_identity, set_access_cookies, current_user, unset_jwt_cookies, get_current_user, verify_jwt_in_request
 from app.auth import auth
-from app import jwt
 from app.auth.models import User
 from app.auth.validators import invalid_form
 
