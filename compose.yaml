@@ -34,10 +34,10 @@ services:
     ports:
       - '5000:5000'
     command: bash -c 'flask db init;
-                      flask db migrate -m "Initial migration.";
+                      flask db migrate -m "Initial migration";
                       flask db upgrade;
-                      gunicorn -w 4 -b 0.0.0.0:5000 "app:app"'
-                      # flask run --host 0.0.0.0'               
+                      flask create_admin;
+                      gunicorn -w 4 -b 0.0.0.0:5000 "app:app"'            
     networks:
       - server-side
 

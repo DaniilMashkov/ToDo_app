@@ -4,7 +4,6 @@ import hashlib
 def invalid_form(instance, form):
     if not form.get('username'):
         return 'Username must be set'
-        print('sssss')
     if not form.get('password'):
         return'Password must be set'
     if not instance:

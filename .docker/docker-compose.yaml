@@ -46,6 +46,3 @@ services:
 networks:
   client-side: {}
   server-side: {}
-
-# volumes:
-#   backend-cache: {}

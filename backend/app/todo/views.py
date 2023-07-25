@@ -17,11 +17,13 @@ def get_tasks():
     ordering = request.args.get('ordering')
 
     if sort and ordering:
-        data = Task.to_collection_dict(db.select(Task).join(User).order_by(
-            text(sort + ordering)), page, per_page)
+        data = Task.to_collection_dict(
+            db.select(Task).join(User).order_by(
+                text(sort + ordering)), page, per_page)
     else:
-        data = Task.to_collection_dict(db.select(Task).join(User).order_by(
-            Task.id_task.desc()), page, per_page)
+        data = Task.to_collection_dict(
+            db.select(Task).join(User).order_by(
+                Task.id_task.desc()), page, per_page)
 
     return data
 
@@ -32,7 +34,7 @@ def create_task():
 
     if invalid := invalid_form(form):
         response = jsonify({"msg": invalid})
-        response.status_code = 400              
+        response.status_code = 400
         return response
 
     query = db.session.execute(
@@ -44,10 +46,9 @@ def create_task():
     )
     db_user = query.first()
 
-    user = User()
-    user.from_dict(form)
-
     if not db_user:
+        user = User()
+        user.from_dict(form)
         db.session.add(user)
         task = Task(owner=user)
     else:
@@ -72,7 +73,7 @@ def update_task(id_task):
 
     if form.get('body') and task.body != form.get('body'):
         form['admin_mark'] = True
-        
+
     task.from_dict(form)
     db.session.commit()
 
